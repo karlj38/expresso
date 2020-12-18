@@ -1,5 +1,5 @@
 const sqlite3 = require("sqlite3");
-const db = new sqlite3.Database("./database.sqlite");
+sqlite3.Database(process.env.TEST_DATABASE || "./database.sqlite");
 
 db.serialize(() => {
   db.run("DROP TABLE IF EXISTS Employee");
@@ -31,7 +31,7 @@ db.serialize(() => {
         description TEXT,
         inventory INTEGER NOT NULL,
         price INTEGER NOT NULL,
-        menu_id INTEGER,
+        menu_id INTEGER NOT NULL,
         FOREIGN KEY (menu_id) REFERENCES Menu (id)
     )`);
 });
