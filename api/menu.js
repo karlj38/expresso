@@ -66,22 +66,26 @@ menuRouter.get("/:menuId", (req, res, next) => {
 
 menuRouter.put("/:menuId", verifyMenu, (req, res, next) => {
   const menu = req.body.menu;
-  db.run(`UPDATE Menu SET title = $title`, { $title: menu.title }, (err) => {
-    if (err) {
-      next(err);
-    } else {
-      db.get(
-        `SELECT * FROM Menu WHERE id = ${req.params.menuId}`,
-        (err, row) => {
-          if (err) {
-            next(err);
-          } else {
-            res.status(200).send({ menu: row });
+  db.run(
+    `UPDATE Menu SET title = $title WHERE id = $menuId`,
+    { $title: menu.title, $menuId: req.params.menuId },
+    (err) => {
+      if (err) {
+        next(err);
+      } else {
+        db.get(
+          `SELECT * FROM Menu WHERE id = ${req.params.menuId}`,
+          (err, row) => {
+            if (err) {
+              next(err);
+            } else {
+              res.status(200).send({ menu: row });
+            }
           }
-        }
-      );
+        );
+      }
     }
-  });
+  );
 });
 
 menuRouter.delete("/:menuId", (req, res, next) => {
@@ -106,5 +110,9 @@ menuRouter.delete("/:menuId", (req, res, next) => {
     }
   );
 });
+
+const menuItemsRouter = require("./menuItems");
+
+menuRouter.use("/:menuId/menu-items", menuItemsRouter);
 
 module.exports = menuRouter;
