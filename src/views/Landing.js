@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
 
-import Expresso from '../utils/Expresso';
+import Expresso from "../utils/Expresso";
 
 class Landing extends Component {
   constructor(props) {
@@ -9,22 +9,32 @@ class Landing extends Component {
 
     this.state = {
       employees: [],
-      menus: []
+      menus: [],
     };
   }
 
   componentDidMount() {
-    Expresso.getMenus().then(menus => {
+    Expresso.getMenus().then((menus) => {
       if (menus.length) {
-        const sortedMenus = this.sortItemNames(menus, 'title');
-        this.setState({menus: sortedMenus});
+        const sortedMenus = this.sortMenus(menus);
+        this.setState({ menus: sortedMenus });
       }
     });
 
-    Expresso.getEmployees().then(employees => {
+    Expresso.getEmployees().then((employees) => {
       if (employees.length) {
-        const sortedEmployees = this.sortItemNames(employees, 'name');
-        this.setState({employees: sortedEmployees});
+        const sortedEmployees = this.sortItemNames(employees, "name");
+        this.setState({ employees: sortedEmployees });
+      }
+    });
+  }
+
+  sortMenus(menus) {
+    return menus.sort((menu1, menu2) => {
+      if (menu1.id < menu2.id) {
+        return -1;
+      } else {
+        return 1;
       }
     });
   }
@@ -40,11 +50,9 @@ class Landing extends Component {
   }
 
   renderMenus() {
-    return this.state.menus.map(menu => {
+    return this.state.menus.map((menu) => {
       return (
-        <Link to={`/menus/${menu.id}`}
-           className="item"
-           key={menu.id}>
+        <Link to={`/menus/${menu.id}`} className="item" key={menu.id}>
           <h3>{menu.title}</h3>
         </Link>
       );
@@ -52,12 +60,14 @@ class Landing extends Component {
   }
 
   renderEmployees() {
-    return this.state.employees.map(employee => {
+    return this.state.employees.map((employee) => {
       return (
-        <Link to={`/employees/${employee.id}`}
-           className="item"
-           key={employee.id}>
-           <h3>{employee.name}</h3>
+        <Link
+          to={`/employees/${employee.id}`}
+          className="item"
+          key={employee.id}
+        >
+          <h3>{employee.name}</h3>
         </Link>
       );
     });
@@ -67,15 +77,15 @@ class Landing extends Component {
     return (
       <div className="Landing">
         <h2>MANAGE MENUS</h2>
-        <div className="menu item-list">
-          {this.renderMenus()}
-        </div>
-        <Link to="/menus/new" className="button">ADD</Link>
+        <div className="menu item-list">{this.renderMenus()}</div>
+        <Link to="/menus/new" className="button">
+          ADD
+        </Link>
         <h2>MANAGE EMPLOYEES</h2>
-        <div className="employee item-list">
-          {this.renderEmployees()}
-        </div>
-        <Link to="/employees/new" className="button">ADD</Link>
+        <div className="employee item-list">{this.renderEmployees()}</div>
+        <Link to="/employees/new" className="button">
+          ADD
+        </Link>
       </div>
     );
   }
