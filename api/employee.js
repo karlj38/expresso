@@ -72,7 +72,7 @@ employeeRouter.get("/:employeeId", (req, res, next) => {
 employeeRouter.put("/:employeeId", verifyEmployee, (req, res, next) => {
   const employee = req.body.employee;
   db.run(
-    "UPDATE Employee SET name = $name, position = $position, wage = $wage",
+    `UPDATE Employee SET name = $name, position = $position, wage = $wage WHERE id = ${req.params.employeeId}`,
     {
       $name: employee.name,
       $position: employee.position,
